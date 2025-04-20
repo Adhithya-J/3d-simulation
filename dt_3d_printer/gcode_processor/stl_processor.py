@@ -3,22 +3,11 @@ import json
 from stl import mesh
 from pathlib import Path
 import os
+from dt_3d_printer.utilities import secrets_utils
 
 
 SECRETS_PATH = Path("secrets.json")
 
-def get_value_from_json(json_file, key, sub_key):
-
-    try:
-        with open(json_file,"r") as f:
-            data = json.load(f)
-            return data[key][sub_key]
-    except FileNotFoundError as e:
-        raise FileNotFoundError(f"File not found error: {str(e.args)}")
-    except KeyError as e:
-        raise KeyError(f"Missing Key: {key} or Sub Key : {sub_key}")
-    except Exception as e:
-        raise RuntimeError(f"Error in reading json file: {str(e)}")
 
 
 def validate_environment(cura_engine_path):
@@ -101,7 +90,7 @@ def slice_with_curaengine(stl_path, output_dir, config_path="fdmprinter.def.json
     else:
         print(f"STL exists: {stl_path}")
     
-    cura_engine_path = Path(get_value_from_json(SECRETS_PATH,"slicing","cura_engine_path")).resolve() 
+    cura_engine_path = Path(secrets_utils.get_value_from_json(SECRETS_PATH,"slicing","cura_engine_path")).resolve() 
 
     validate_environment(cura_engine_path)
     validate_stl(stl_path)
@@ -181,10 +170,9 @@ if __name__ == "__main__":
     try:
         
        
-        stl_file = Path(get_value_from_json(SECRETS_PATH,"slicing","stl_file"))#.resolve() #r"D:\20 BTP\20mm_cube.stl"
-        output_dir = Path(get_value_from_json(SECRETS_PATH,"slicing","output_dir"))#.resolve() #r"D:\20 BTP\cura_output"
-        config_file = Path(get_value_from_json(SECRETS_PATH,"slicing","config_file"))#.resolve()  # r"D:\20 BTP\fdmprinter.def.json" # r"D:\20 BTP\fdmprinter.def.json" #r"C:\Program Files\UltiMaker Cura 5.9.0\share\cura\resources\definitions\fdmprinter.def.json"  #r"D:\20 BTP\minimal_config.def.json" # r"D:\20 BTP\fdmprinter.def.json" #
-        # config_file = prepare_path(config_file)
+        stl_file = Path(secrets_utils.get_value_from_json(SECRETS_PATH,"slicing","stl_file"))#.resolve() #
+        output_dir = Path(secrets_utils.get_value_from_json(SECRETS_PATH,"slicing","output_dir"))#.resolve()
+        config_file = Path(secrets_utils.get_value_from_json(SECRETS_PATH,"slicing","config_file"))#.resolve() 
         
         try:
             import win32file

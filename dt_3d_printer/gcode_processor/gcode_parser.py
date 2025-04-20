@@ -4,9 +4,6 @@ from dt_3d_printer.utilities import secrets_utils
 
 SECRETS_PATH = Path("secrets.json")
 
-
-
-
 class GCodeParser:
 
     def __init__(self):
@@ -84,22 +81,8 @@ class GCodeParser:
 
     def _process_movement(self,command):
 
-        # matches = re.findall(f"([XYZEFS])([-+]?[0-9]*\.?[0-9]+)",command)
-
         params = self._parse_params(command)
 
-        '''
-        params = {}
-        for part in command.split()[1:]:
-            if len(part) < 1:
-                continue
-            param = part[0].upper()
-            try:
-                value = float(part[1:])
-                params[param] = value
-            except ValueError:
-                continue
-        '''
 
         if "F" in params:
             self.current_position["F"] = params["F"]
@@ -134,29 +117,12 @@ class GCodeParser:
     
     def _process_set_position(self,command):
         
-        #matches = re.findall(r"([XYZEFS])([-+]?[0-9]*\.?[0-9]+)", command)
         params = self._parse_params(command)
 
         for axis, value in params.items():
             if axis in self.current_position:
                 self.current_position[axis] = float(value)
-        '''
-        params = {}
-        for part in command.split()[1:]:
-            if len(part)<1:
-                continue
-            param = part[0].upper()
-            try:
-                value = float(part[1:])
-                params[param] = value
 
-            except ValueError:
-                continue
-        
-        for axis in params:
-            if axis in self.current_position:
-                self.current_position[axis] = params[axis]
-        '''
     def get_absolute_coordinates(self):
         return self.parsed_data
     
@@ -164,7 +130,6 @@ class GCodeParser:
 
 if __name__ == "__main__":
 
-    #file_path = r"D:\20 BTP\3d-simulation\files\cura_output\20mm_cube.gcode"
 
     file_path = secrets_utils.get_value_from_json(SECRETS_PATH,"parser","gcode_file")
 
