@@ -1,0 +1,7 @@
+tutorials
+docs\resources.md
+cura_output
+secrets.json
+files
+*.egg-info/
+*.stl/
